@@ -39,3 +39,14 @@
 
 # debug information files
 *.dwo
+
+# Claude Code
+.claude/
+CLAUDE.md
+
+# CMake build output
+build/
+compile_commands.json
+
+# Editor config
+.vscode/
