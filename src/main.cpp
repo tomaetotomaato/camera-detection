@@ -1,54 +1,28 @@
 #include <iostream>
-#include <opencv2/opencv.hpp>
-#include <vector>
-#include <string>
 #include <filesystem>
-#include <algorithm>
+#include <memory>
+#include <opencv2/opencv.hpp>
+
+#include "ICameraSource.h"
+#include "TestCameraSource.h"
 
 namespace fs = std::filesystem;
 
 int main() {
+    std::unique_ptr<ICameraSource> cameraSource = std::make_unique<TestCameraSource>("../test_data");
 
-    const std::string test_data_dir = "../test_data";
-
-    const std::vector<std::string> valid_ext = {
-        ".jpg", 
-        ".jpeg", 
-        ".png", 
-        ".bmp", 
-        ".tiff"
-    };
-
-    std::vector<std::string> imgs;
-
-    for (const auto& entry : fs::directory_iterator(test_data_dir)) {
-        if (entry.is_regular_file()) {
-            std::string ext = entry.path().extension().string();
-            std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
-            if (std::find(valid_ext.begin(), valid_ext.end(), ext) != valid_ext.end()) {
-                imgs.push_back(entry.path().string());
-            }
+    while (true) {
+        std::optional<cv::Mat> frame = cameraSource->getNextFrame();
+        if (!frame) {
+            std::cout << "No more frames available." << std::endl;
+            break; // This breaks even if cameraSource is not unplugged. In a real implementation, you might want to handle this differently, such as waiting for new frames or exiting gracefully.
         }
-    }
-
-    std::sort(imgs.begin(), imgs.end());
-    std::cout << "Found " << imgs.size() << " valid image(s) in the directory." << std::endl;
-
-    for (const std::string& img_path : imgs) {
-        cv::Mat img = cv::imread(img_path);
-        // imread silently fails if the image cannot be loaded, so we check if the image is empty. 
-        if (img.empty()) {
-            std::cerr << "Could not read the image: " << img_path << std::endl;
-            continue; // Skip to the next image instead of failing the entire program. 
-        }
-
-        cv::imshow("Image", img);
+        cv::imshow("Image", *frame);
 
         int key = cv::waitKey(500);
-        if ((key & 0xFF) == 'q') { // Masking with 0xFF to get the ASCII value of the key pressed.
+        if ((key & 0xFF) == 'q') {
             break;
         }
     }
-    
     return 0;
 }
