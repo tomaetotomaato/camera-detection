@@ -50,3 +50,6 @@ compile_commands.json
 
 # Editor config
 .vscode/
+
+# Model files (large binaries — supplied per the README, not checked in)
+*.onnx
