@@ -1,3 +1,0 @@
-/home/tomaetotomaato/camera-detection/build/CMakeFiles/camera_detection.dir
-/home/tomaetotomaato/camera-detection/build/CMakeFiles/edit_cache.dir
-/home/tomaetotomaato/camera-detection/build/CMakeFiles/rebuild_cache.dir
