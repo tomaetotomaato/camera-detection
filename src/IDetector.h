@@ -1,13 +1,15 @@
 #pragma once
 
-#include <optional>
 #include <opencv2/core/mat.hpp>
+#include <vector>
 
-class ICameraSource {
+#include "Detection.h"
+
+class IDetector {
     public:
     // Virtual destructor
-    virtual ~ICameraSource() = default;
+    virtual ~IDetector() = default;
 
     // = 0 marks this as pure virtual, so derived classes must implement it.
-    virtual std::optional<cv::Mat> getNextFrame() = 0;
+    virtual std::vector<Detection> detect(const cv::Mat& frame) = 0;
 };
